@@ -8,7 +8,14 @@ class ItemCreate(BaseModel):
     description: str
     price: float
     stock: int
-    image_url: str
+    image_url: str = ""
+
+class ItemUpdate(BaseModel):
+    title: str | None = None
+    description: str | None = None
+    price: float | None = None
+    stock: int | None = None
+    image_url: str | None = None
 class ItemResponse(ItemCreate):
     id: int
 

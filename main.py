@@ -5,7 +5,7 @@ from decimal import Decimal
 from dotenv import load_dotenv
 import secrets
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi import FastAPI, Depends, Header, HTTPException, Request
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import inspect, text
@@ -28,13 +28,6 @@ with engine.begin() as connection:
         ))
 
 app = FastAPI(title="VeerG's Xtore API")
-
-# This dictionary maps the item title to its image URL.
-CATALOG_IMAGES = {
-    "Walnut Desk Organizer": "/img/Walnut%20Desk%20Organizer.jpg",
-    "Linen Journal, Forest Green": "/img/Linen%20Journal%20Forest%20Green.jpg",
-    "Brass Fountain Pen": "/img/brass_pen.jpg"
-}
 
 stripe.api_key = os.environ.get("STRIPE_API_KEY")
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
@@ -64,6 +57,11 @@ def current_user(authorization: str | None = Header(default=None), db: Session =
         raise HTTPException(401, "Your session has expired")
     return user
 
+def admin_api_key(api_key: str | None = Header(default=None, alias="X-Admin-Key")):
+    expected_key = os.environ.get("ADMIN_API_KEY")
+    if not expected_key or not api_key or not secrets.compare_digest(api_key, expected_key):
+        raise HTTPException(401, "Valid admin API key is required")
+
 # This line of code serializes an item to a dictionary.
 def serialize_item(item: models.Item):
     return {
@@ -72,7 +70,7 @@ def serialize_item(item: models.Item):
         "description": item.description,
         "price": item.price,
         "stock": item.stock,
-        "image_url": item.img or CATALOG_IMAGES.get(item.title)
+        "image_url": item.img
     }
 
 # This line of code serializes an order to a dictionary.
@@ -132,7 +130,42 @@ def login(data: schemas.LoginRequest, db: Session = Depends(get_db)):
 def read_items(db: Session = Depends(get_db)):
     return [serialize_item(item) for item in db.query(models.Item).filter_by(is_active=True).all()]
 
-@app.delete("/items/{item_id}")
+@app.post("/admin/items", response_model=schemas.ItemResponse, dependencies=[Depends(admin_api_key)])
+def create_item(data: schemas.ItemCreate, db: Session = Depends(get_db)):
+    item = models.Item(
+        title=data.title.strip(),
+        description=data.description.strip(),
+        price=data.price,
+        stock=data.stock,
+        img=data.image_url.strip(),
+        is_active=True,
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return serialize_item(item)
+
+@app.patch("/admin/items/{item_id}", response_model=schemas.ItemResponse, dependencies=[Depends(admin_api_key)])
+def update_item(item_id: int, data: schemas.ItemUpdate, db: Session = Depends(get_db)):
+    item = db.get(models.Item, item_id)
+    if not item:
+        raise HTTPException(404, "Item not found")
+    changes = data.model_dump(exclude_unset=True)
+    if "title" in changes:
+        item.title = changes["title"].strip()
+    if "description" in changes:
+        item.description = changes["description"].strip()
+    if "image_url" in changes:
+        item.img = changes["image_url"].strip()
+    if "price" in changes:
+        item.price = changes["price"]
+    if "stock" in changes:
+        item.stock = changes["stock"]
+    db.commit()
+    db.refresh(item)
+    return serialize_item(item)
+
+@app.delete("/admin/items/{item_id}", dependencies=[Depends(admin_api_key)])
 def delete_item(item_id: int, db: Session = Depends(get_db)):
     item = db.get(models.Item, item_id)
     if not item:
