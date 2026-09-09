@@ -32,6 +32,12 @@ app = FastAPI(title="VeerG's Xtore API")
 stripe.api_key = os.environ.get("STRIPE_API_KEY")
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
+CATALOG_IMAGES = {
+    "Walnut Desk Organizer": "/img/Walnut%20Desk%20Organizer.jpg",
+    "Linen Journal, Forest Green": "/img/Linen%20Journal%20Forest%20Green.jpg",
+    "Brass Fountain Pen": "/img/brass_pen.jpg",
+}
+
 def get_db():
     db = SessionLocal()
     try:
@@ -70,7 +76,7 @@ def serialize_item(item: models.Item):
         "description": item.description,
         "price": item.price,
         "stock": item.stock,
-        "image_url": item.img
+        "image_url": item.img or CATALOG_IMAGES.get(item.title, "")
     }
 
 # This line of code serializes an order to a dictionary.

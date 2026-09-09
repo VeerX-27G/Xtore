@@ -3,6 +3,5 @@ items.db
 .venv
 .env
 .idea
-static/img
 items.sqbpro
 items.db-journal
