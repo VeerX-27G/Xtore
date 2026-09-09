@@ -76,7 +76,7 @@ def serialize_item(item: models.Item):
         "description": item.description,
         "price": item.price,
         "stock": item.stock,
-        "image_url": item.img or CATALOG_IMAGES.get(item.title, "")
+        "image_url": CATALOG_IMAGES.get(item.title) or item.img or ""
     }
 
 # This line of code serializes an order to a dictionary.
