@@ -359,12 +359,13 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   transition: all 0.22s ease;
   box-shadow: var(--shadow-sm);
+  border: 2px solid;
+  border-color: #059669;
 }
 
 .card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(10, 126, 140, 0.3);
 }
 
 .card .entry-no {
@@ -391,7 +392,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 16px;
   font-weight: 600;
   color: #FFFFFF;
-  background: linear-gradient(135deg, #0A7E8C 0%, #064E3B 100%);
+  background: white;
   text-align: center;
   padding: 12px;
   overflow: hidden;
