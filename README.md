@@ -15,10 +15,11 @@ An eCommerce app for Stationary and Wooden storage materials like drawers, boxes
 
 3. Items in cart remains same after logout unless added or removed by the user.
 
-4. No user can access other registerd users' carts and purchases' history.
+4. No user can access other registerd users' carts and purchases' history because of secure password hashing and session management.
 
 5. Payments are powered by [Stripe](https://stripe.com/en-ca).
 
 ## Notes
-1. **All products shown in the website are FAKE, so payment gateway has [Sandbox](https://docs.stripe.com/sandboxes)** -- App is currently made just to showcase developer skills.
-2. This app is under development; new features are coming.
+1. **All products shown in the website are FAKE, so payment gateway has [Sandbox](https://docs.stripe.com/sandboxes)** -- This is just to showcase successful working of an E-Commerce app.
+2. This app is currently under development; more features are coming.
+3. **WARNING: Please do NOT use real credit/debit card details** -- only use the test card numbers provided by [Stripe](https://stripe.com/docs/testing).
