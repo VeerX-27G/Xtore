@@ -7,8 +7,8 @@ An eCommerce app for Stationary and Wooden storage materials like drawers, boxes
 | Layer     | Choice                                 |
 |-----------|----------------------------------------|
 | Backend   | FastAPI/Pydantic, SQLAlchemy, Stripe   |
-| Storage   | SQLite  (Stored in Heruko's PostgreSQL) |
-| Frontend  | HTML5, Bootstrap5 and CSS, JavaScript          |
+| Storage   | SQLite                                 |
+| Frontend  | HTML5, Bootstrap5 and CSS, JavaScript   |
 
 ## Features
 1. Each item has given desription, image, price and quantity in stock.
@@ -34,7 +34,5 @@ An eCommerce app for Stationary and Wooden storage materials like drawers, boxes
 ![alt text](images/test_payment.png)
 ![alt text](images/success.png)
 
-## Notes
-1. **All products shown in the website are FAKE, so payment gateway has [Sandbox](https://docs.stripe.com/sandboxes)** -- This is just to showcase successful working of an E-Commerce app.
-2. This app is currently under development; more features are coming.
-3. **WARNING: Please do NOT use real credit/debit card details** -- only use the test card numbers provided by [Stripe](https://stripe.com/docs/testing).
+##  Note
+**Please do NOT use real credit/debit card details** -- only use the test card numbers provided by [Stripe](https://stripe.com/docs/testing).
